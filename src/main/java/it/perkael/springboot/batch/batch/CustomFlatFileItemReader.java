@@ -5,8 +5,10 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.repository.query.Param;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -14,7 +16,9 @@ import java.io.InputStream;
 public class CustomFlatFileItemReader<T> extends FlatFileItemReader<T> implements StepExecutionListener {
 
     private byte[] stream;
-    private String uri = "http://localhost:8081/getFileZip";
+
+    @Value("${httpUrl.path}")
+    private String uri;
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -40,10 +44,6 @@ public class CustomFlatFileItemReader<T> extends FlatFileItemReader<T> implement
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         return null;
-    }
-
-    public void setUri(String uri) {
-        this.uri = uri;
     }
 
 }
