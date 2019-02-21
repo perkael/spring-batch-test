@@ -6,10 +6,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoadController {
@@ -20,14 +17,19 @@ public class LoadController {
 
     @RequestMapping(value = "startJob", method = RequestMethod.GET)
     public String load() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-
-        String ret = "JOB ID: " + batchService.startJob();
+        batchService.startJob();
+        String ret = "JOB STARTED";
         return ret;
 
     }
 
     @RequestMapping(value = "jobStatus/{idJob}", method = RequestMethod.GET)
-    public String jobStatus(@RequestParam("idJob") Long idJob) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public String jobStatus(@RequestHeader("idJob") Long idJob) {
         return batchService.jobStatus(idJob);
+    }
+
+    @RequestMapping(value = "getLastJobStatus", method = RequestMethod.GET)
+    public String getLastJobStatus() {
+        return batchService.getLastJobStatus();
     }
 }

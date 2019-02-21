@@ -10,4 +10,6 @@ public interface BatchService {
     public Long startJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException;
 
     public String jobStatus(Long idJob);
+
+    String getLastJobStatus();
 }
