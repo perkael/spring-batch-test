@@ -19,6 +19,8 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 
 
 @Configuration
@@ -43,12 +45,15 @@ public class BatchConfiguration {
         return job;
     }
 
+    @Retryable(
+            value = {Exception.class},
+            maxAttempts = 2,
+            backoff = @Backoff(delay = 5000))
     @Bean
     public ItemReader<? extends User> itemReader() {
-        CustomFlatFileItemReader<User> customFlatFileItemReader = new CustomFlatFileItemReader<>();
+        CustomFlatFileItemReader<User> customFlatFileItemReader = new CustomFlatFileItemReader<>(lineMapper());
         customFlatFileItemReader.setName("CSV-Reader");
-        customFlatFileItemReader.setLinesToSkip(1); //skip header
-        customFlatFileItemReader.setLineMapper(lineMapper());
+        customFlatFileItemReader.setLinesToSkip(1);
         return customFlatFileItemReader;
     }
 
