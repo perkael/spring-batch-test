@@ -39,14 +39,10 @@ public class BatchServiceImpl implements BatchService {
     @Autowired
     private Job job;
 
-    @Retryable(
-            value = {Exception.class},
-            maxAttempts = 2,
-            backoff = @Backoff(delay = 5000))
     @Async
     @Override
     public Long startJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
-        LOGGER.info("##### RETRY ########");
+
         long currentTimeMillis = System.currentTimeMillis();
         Map<String, JobParameter> maps = new HashMap<>();
         maps.put("time", new JobParameter(currentTimeMillis));
